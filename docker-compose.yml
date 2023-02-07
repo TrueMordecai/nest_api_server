@@ -1,0 +1,38 @@
+version: '3.7'
+
+services:
+  server:
+    container_name: area_server
+    restart: always
+    build: './server'
+    env_file:
+      - .env
+    ports:
+      - '${SERVER_PORT}:${SERVER_PORT}'
+    networks:
+      - server
+    volumes:
+      - ./server:/server
+    links:
+      - db
+    depends_on:
+      - db
+
+  db:
+    container_name: area_db
+    restart: always
+    image: 'mysql'
+    env_file:
+      - .env
+    ports:
+      - '${DB_PORT}:${DB_PORT}'
+    networks:
+      - server
+    volumes:
+      - area_db_data:/var/lib/mysql
+
+networks:
+  server:
+
+volumes:
+  area_db_data:
